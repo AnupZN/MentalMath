@@ -46,6 +46,9 @@ app.*.map.json
 **/key.properties
 **/*.jks
 **/*.keystore
+.gradle/
+android/build/
+android/.gradle/
 
 # Widget Preview related
 .widget_preview/
