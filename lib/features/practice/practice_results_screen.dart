@@ -21,6 +21,9 @@ class PracticeResultsScreen extends StatelessWidget {
       case Operation.subtraction: return 'Subtraction';
       case Operation.multiplication: return 'Multiplication';
       case Operation.division: return 'Division';
+      case Operation.tables: return 'Tables';
+      case Operation.square: return 'Squares';
+      case Operation.cube: return 'Cubes';
       case null: return 'Practice';
     }
   }
@@ -205,7 +208,7 @@ class _AttemptTile extends StatelessWidget {
           ),
         ),
         title: Text(
-          '${q.operand1} ${q.operatorSymbol} ${q.operand2} = ${q.correctAnswer}',
+          '${q.displayString} = ${q.correctAnswer}',
           style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(

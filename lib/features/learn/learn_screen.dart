@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tables_screen.dart';
-import 'squares_cubes_screen.dart';
-import 'primes_screen.dart';
+import 'squares_screen.dart';
+import 'cubes_screen.dart';
 
 class LearnScreen extends StatelessWidget {
   const LearnScreen({super.key});
@@ -16,16 +16,16 @@ class LearnScreen extends StatelessWidget {
           bottom: const TabBar(
             tabs: [
               Tab(icon: Icon(Icons.table_chart_outlined), text: 'Tables'),
-              Tab(icon: Icon(Icons.functions_rounded), text: 'Squares & Cubes'),
-              Tab(icon: Icon(Icons.circle_outlined), text: 'Primes'),
+              Tab(icon: Icon(Icons.superscript_rounded), text: 'Squares'),
+              Tab(icon: Icon(Icons.category_outlined), text: 'Cubes'),
             ],
           ),
         ),
         body: const TabBarView(
           children: [
             TablesScreen(),
-            SquaresCubesScreen(),
-            PrimesScreen(),
+            SquaresScreen(),
+            CubesScreen(),
           ],
         ),
       ),

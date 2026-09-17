@@ -48,6 +48,9 @@ class _PracticeHomeScreenState extends ConsumerState<PracticeHomeScreen> {
       case Operation.subtraction: return 'Subtraction';
       case Operation.multiplication: return 'Multiplication';
       case Operation.division: return 'Division';
+      case Operation.tables: return 'Tables';
+      case Operation.square: return 'Squares';
+      case Operation.cube: return 'Cubes';
     }
   }
 
@@ -57,6 +60,9 @@ class _PracticeHomeScreenState extends ConsumerState<PracticeHomeScreen> {
       case Operation.subtraction: return Icons.remove;
       case Operation.multiplication: return Icons.close;
       case Operation.division: return Icons.percent;
+      case Operation.tables: return Icons.table_chart_outlined;
+      case Operation.square: return Icons.superscript_rounded;
+      case Operation.cube: return Icons.category_outlined;
     }
   }
 
@@ -98,7 +104,71 @@ class _PracticeHomeScreenState extends ConsumerState<PracticeHomeScreen> {
           case DifficultyLevel.level5: return '3-digit ÷ 1-digit  (e.g. 672 ÷ 7)';
           case DifficultyLevel.level6: return 'Divide by prime  (e.g. 133 ÷ 19)';
         }
+      case Operation.tables:
+        switch (level) {
+          case DifficultyLevel.level1: return 'Tables 2–5 × 1–10';
+          case DifficultyLevel.level2: return 'Tables 6–10 × 1–10';
+          case DifficultyLevel.level3: return 'Tables 11–15 × 1–10';
+          case DifficultyLevel.level4: return 'Tables 16–20 × 1–10';
+          case DifficultyLevel.level5: return 'Tables 21–25 × 1–10';
+          case DifficultyLevel.level6: return 'Prime Tables (2–97 × 1–10)';
+        }
+      case Operation.square:
+        switch (level) {
+          case DifficultyLevel.level1: return 'Squares 1² – 10²';
+          case DifficultyLevel.level2: return 'Squares 11² – 15²';
+          case DifficultyLevel.level3: return 'Squares 16² – 20²';
+          case DifficultyLevel.level4: return 'Squares 21² – 25²';
+          case DifficultyLevel.level5: return 'Squares 26² – 30²';
+          case DifficultyLevel.level6: return 'Squares 31² – 50²';
+        }
+      case Operation.cube:
+        switch (level) {
+          case DifficultyLevel.level1: return 'Cubes 1³ – 5³';
+          case DifficultyLevel.level2: return 'Cubes 6³ – 10³';
+          case DifficultyLevel.level3: return 'Cubes 11³ – 15³';
+          case DifficultyLevel.level4: return 'Cubes 16³ – 20³';
+          case DifficultyLevel.level5: return 'Cubes 21³ – 25³';
+          case DifficultyLevel.level6: return 'Cubes 1³ – 30³ (Speed Mix)';
+        }
     }
+  }
+
+  Widget _buildOpTile(Operation op, ColorScheme colorScheme, ThemeData theme) {
+    final selected = _selectedOp == op;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedOp = op),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          color: selected ? colorScheme.primaryContainer : colorScheme.surfaceContainerLow,
+          border: Border.all(
+            color: selected ? colorScheme.primary : colorScheme.outlineVariant,
+            width: selected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              _opIcon(op),
+              color: selected ? colorScheme.primary : colorScheme.onSurfaceVariant,
+              size: 18,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              _opName(op),
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: selected ? colorScheme.primary : colorScheme.onSurface,
+                fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _startSession() {
@@ -126,8 +196,8 @@ class _PracticeHomeScreenState extends ConsumerState<PracticeHomeScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           // Operation selector
-          Text('Choose Operation', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 12),
+          Text('Arithmetic', style: theme.textTheme.titleSmall?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
           GridView.count(
             crossAxisCount: 2,
             childAspectRatio: 2.8,
@@ -135,41 +205,30 @@ class _PracticeHomeScreenState extends ConsumerState<PracticeHomeScreen> {
             physics: const NeverScrollableScrollPhysics(),
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
-            children: Operation.values.map((op) {
-              final selected = _selectedOp == op;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedOp = op),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  decoration: BoxDecoration(
-                    color: selected ? colorScheme.primaryContainer : colorScheme.surfaceContainerLow,
-                    border: Border.all(
-                      color: selected ? colorScheme.primary : colorScheme.outlineVariant,
-                      width: selected ? 2 : 1,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        _opIcon(op),
-                        color: selected ? colorScheme.primary : colorScheme.onSurfaceVariant,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        _opName(op),
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          color: selected ? colorScheme.primary : colorScheme.onSurface,
-                          fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                        ),
-                      ),
-                    ],
-                  ),
+            children: [
+              Operation.addition,
+              Operation.subtraction,
+              Operation.multiplication,
+              Operation.division,
+            ].map((op) => _buildOpTile(op, colorScheme, theme)).toList(),
+          ),
+          const SizedBox(height: 14),
+          Text('Powers & Tables', style: theme.textTheme.titleSmall?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Operation.tables,
+              Operation.square,
+              Operation.cube,
+            ].map((op) => Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: SizedBox(
+                  height: 48,
+                  child: _buildOpTile(op, colorScheme, theme),
                 ),
-              );
-            }).toList(),
+              ),
+            )).toList(),
           ),
           const SizedBox(height: 20),
 
@@ -252,12 +311,18 @@ class _PracticeHomeScreenState extends ConsumerState<PracticeHomeScreen> {
                   ],
                 ),
                 const Divider(),
-                // Timed mode
+                // Timed mode (timer per question)
                 Row(
                   children: [
                     const Icon(Icons.timer_outlined, size: 20),
                     const SizedBox(width: 8),
-                    Text('Timed Mode', style: theme.textTheme.bodyMedium),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Timer per question', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+                        Text('Countdown for each question', style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
+                      ],
+                    ),
                     const Spacer(),
                     Switch(
                       value: _timedMode,
@@ -269,15 +334,15 @@ class _PracticeHomeScreenState extends ConsumerState<PracticeHomeScreen> {
                   const Divider(),
                   Row(
                     children: [
-                      const Icon(Icons.hourglass_bottom_outlined, size: 20),
+                      const Icon(Icons.speed_rounded, size: 20),
                       const SizedBox(width: 8),
-                      Text('Time per Q', style: theme.textTheme.bodyMedium),
+                      Text('Time limit', style: theme.textTheme.bodyMedium),
                       const Spacer(),
                       DropdownButton<int>(
                         value: _timeLimitSeconds,
                         underline: const SizedBox.shrink(),
                         items: AppConstants.timeLimitOptions
-                            .map((n) => DropdownMenuItem(value: n, child: Text('${n}s')))
+                            .map((n) => DropdownMenuItem(value: n, child: Text('${n}s per question')))
                             .toList(),
                         onChanged: (v) => setState(() => _timeLimitSeconds = v!),
                       ),
@@ -288,13 +353,13 @@ class _PracticeHomeScreenState extends ConsumerState<PracticeHomeScreen> {
                 // Feedback mode
                 Row(
                   children: [
-                    const Icon(Icons.feedback_outlined, size: 20),
+                    const Icon(Icons.flash_on_rounded, size: 20),
                     const SizedBox(width: 8),
                     Text('Feedback', style: theme.textTheme.bodyMedium),
                     const Spacer(),
                     SegmentedButton<FeedbackMode>(
                       segments: const [
-                        ButtonSegment(value: FeedbackMode.instant, label: Text('Instant')),
+                        ButtonSegment(value: FeedbackMode.instant, label: Text('Rapid')),
                         ButtonSegment(value: FeedbackMode.endOfSession, label: Text('End')),
                       ],
                       selected: {_feedbackMode},

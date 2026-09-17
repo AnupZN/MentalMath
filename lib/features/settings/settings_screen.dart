@@ -118,7 +118,7 @@ class _SettingsList extends ConsumerWidget {
                 title: const Text('Feedback Mode'),
                 trailing: SegmentedButton<FeedbackMode>(
                   segments: const [
-                    ButtonSegment(value: FeedbackMode.instant, label: Text('Instant')),
+                    ButtonSegment(value: FeedbackMode.instant, label: Text('Rapid')),
                     ButtonSegment(value: FeedbackMode.endOfSession, label: Text('End')),
                   ],
                   selected: {settings.feedbackMode},

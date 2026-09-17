@@ -17,7 +17,20 @@ class Question {
     required this.difficulty,
   });
 
-  String get displayString => '$operand1 $operatorSymbol $operand2';
+  String get displayString {
+    switch (operation) {
+      case Operation.square:
+        return '$operand1²';
+      case Operation.cube:
+        return '$operand1³';
+      case Operation.tables:
+      case Operation.multiplication:
+      case Operation.addition:
+      case Operation.subtraction:
+      case Operation.division:
+        return '$operand1 $operatorSymbol $operand2';
+    }
+  }
 
   String get operatorSymbol {
     switch (operation) {
@@ -25,6 +38,9 @@ class Question {
       case Operation.subtraction: return '-';
       case Operation.multiplication: return '×';
       case Operation.division: return '÷';
+      case Operation.tables: return '×';
+      case Operation.square: return '²';
+      case Operation.cube: return '³';
     }
   }
 

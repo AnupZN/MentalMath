@@ -37,7 +37,6 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
   bool _lastAnswerCorrect = false;
   int _remainingSeconds = 0;
   Timer? _questionTimer;
-  bool _keypadDisabled = false;
 
   // Feedback animation
   late AnimationController _feedbackController;
@@ -89,64 +88,57 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
   }
 
   void _handleTimeUp() {
-    if (_keypadDisabled) return;
     _submitAnswer(null); // timed out → mark incorrect
   }
 
   void _onDigitPressed(int digit) {
-    if (_keypadDisabled) return;
     if (_currentInput.length >= 6) return; // max 6 digits
     setState(() => _currentInput += '$digit');
   }
 
   void _onBackspace() {
-    if (_keypadDisabled) return;
     if (_currentInput.isNotEmpty) {
       setState(() => _currentInput = _currentInput.substring(0, _currentInput.length - 1));
     }
   }
 
   void _onSubmit() {
-    if (_keypadDisabled || _currentInput.isEmpty) return;
+    if (_currentInput.isEmpty) return;
     final answer = int.tryParse(_currentInput);
     _submitAnswer(answer);
   }
 
   void _submitAnswer(int? answer) {
-    if (_keypadDisabled) return;
     _questionTimer?.cancel();
+    
+    final sessionState = ref.read(sessionProvider);
+    final currentQ = sessionState.questions[sessionState.currentIndex];
+    final isCorrect = answer == currentQ.correctAnswer;
     
     final notifier = ref.read(sessionProvider.notifier);
     notifier.submitAnswer(answer);
 
-    final sessionState = ref.read(sessionProvider);
-    final currentQ = sessionState.questions[sessionState.currentIndex];
-    final isCorrect = answer == currentQ.correctAnswer;
-
     if (widget.feedbackMode == FeedbackMode.instant) {
-      _showInstantFeedback(isCorrect, () => _advance());
-    } else {
-      _advance();
+      _showInstantFeedback(isCorrect, isCorrect ? null : currentQ.correctAnswer);
     }
+    _advance();
   }
 
-  void _showInstantFeedback(bool isCorrect, VoidCallback onDone) {
+  void _showInstantFeedback(bool isCorrect, int? correctAnswer) {
     setState(() {
       _showFeedback = true;
       _lastAnswerCorrect = isCorrect;
-      _keypadDisabled = true;
     });
     _feedbackController.forward(from: 0);
 
-    Future.delayed(const Duration(milliseconds: 900), () {
+    // Subtle, rapid auto-fade (300ms) that does NOT block user typing
+    Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) {
         _feedbackController.reverse().then((_) {
           if (mounted) {
             setState(() {
               _showFeedback = false;
-              _keypadDisabled = false;
             });
-            onDone();
           }
         });
       }
@@ -275,46 +267,44 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
                     child: QuestionCard(question: currentQ),
                   ),
 
-                  // Instant feedback overlay
+                  // Instant rapid feedback pill (non-blocking)
                   if (_showFeedback)
-                    FadeTransition(
-                      opacity: _feedbackOpacity,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 24),
-                        decoration: BoxDecoration(
-                          color: _lastAnswerCorrect
-                              ? Colors.green.withValues(alpha: 0.92)
-                              : colorScheme.error.withValues(alpha: 0.92),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                    Positioned(
+                      top: 4,
+                      child: FadeTransition(
+                        opacity: _feedbackOpacity,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: _lastAnswerCorrect
+                                ? Colors.green.shade600
+                                : colorScheme.error,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: (_lastAnswerCorrect ? Colors.green : colorScheme.error).withValues(alpha: 0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                _lastAnswerCorrect ? Icons.check_circle_outline : Icons.cancel_outlined,
-                                size: 64,
+                                _lastAnswerCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                                size: 18,
                                 color: Colors.white,
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(width: 6),
                               Text(
-                                _lastAnswerCorrect ? 'Correct!' : 'Incorrect',
+                                _lastAnswerCorrect ? 'Correct! +1' : 'Incorrect',
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 24,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              if (!_lastAnswerCorrect) ...[
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Answer: ${currentQ.correctAnswer}',
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
                             ],
                           ),
                         ),
@@ -331,7 +321,6 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
                 onDigitPressed: _onDigitPressed,
                 onBackspace: _onBackspace,
                 onSubmit: _currentInput.isEmpty ? null : _onSubmit,
-                disabled: _keypadDisabled,
               ),
             ),
             const SizedBox(height: 8),

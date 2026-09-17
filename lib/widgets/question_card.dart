@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/enums.dart';
 import '../models/question.dart';
 
 /// Displays a math question prominently with large, adaptive typography.
@@ -46,20 +47,33 @@ class QuestionCard extends StatelessWidget {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text('${question.operand1}', style: baseStyle),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Text(
-                      question.operatorSymbol,
-                      style: baseStyle.copyWith(
-                        fontSize: operatorFontSize,
-                        fontWeight: FontWeight.w300,
-                        color: colorScheme.primary,
+                  if (question.operation == Operation.square || question.operation == Operation.cube) ...[
+                    Transform.translate(
+                      offset: const Offset(2, -14),
+                      child: Text(
+                        question.operation == Operation.square ? '2' : '3',
+                        style: baseStyle.copyWith(
+                          fontSize: fontSize * 0.6,
+                          color: colorScheme.primary,
+                        ),
                       ),
                     ),
-                  ),
-                  Text('${question.operand2}', style: baseStyle),
+                  ] else ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Text(
+                        question.operatorSymbol,
+                        style: baseStyle.copyWith(
+                          fontSize: operatorFontSize,
+                          fontWeight: FontWeight.w300,
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                    Text('${question.operand2}', style: baseStyle),
+                  ],
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Text(
                       '=',
                       style: baseStyle.copyWith(

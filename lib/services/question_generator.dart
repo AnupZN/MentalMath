@@ -41,6 +41,21 @@ class QuestionGenerator {
           op1 = pair.$1;
           op2 = pair.$2;
           break;
+        case Operation.tables:
+          final pair = _generateTables(difficulty);
+          op1 = pair.$1;
+          op2 = pair.$2;
+          break;
+        case Operation.square:
+          final pair = _generateSquare(difficulty);
+          op1 = pair.$1;
+          op2 = pair.$2;
+          break;
+        case Operation.cube:
+          final pair = _generateCube(difficulty);
+          op1 = pair.$1;
+          op2 = pair.$2;
+          break;
       }
 
       if (_validate(operation, op1, op2)) {
@@ -70,8 +85,11 @@ class QuestionGenerator {
     switch (op) {
       case Operation.addition: ans = op1 + op2; break;
       case Operation.subtraction: ans = op1 - op2; break;
-      case Operation.multiplication: ans = op1 * op2; break;
+      case Operation.multiplication:
+      case Operation.tables: ans = op1 * op2; break;
       case Operation.division: ans = op1 ~/ op2; break;
+      case Operation.square: ans = op1 * op1; break;
+      case Operation.cube: ans = op1 * op1 * op1; break;
     }
     return Question(
       id: '${op.name}_${diff.name}_${index}_${DateTime.now().microsecondsSinceEpoch}',
@@ -89,11 +107,14 @@ class QuestionGenerator {
     switch (op) {
       case Operation.addition: ans = op1 + op2; break;
       case Operation.subtraction: ans = op1 - op2; break;
-      case Operation.multiplication: ans = op1 * op2; break;
+      case Operation.multiplication:
+      case Operation.tables: ans = op1 * op2; break;
       case Operation.division: 
         if (op1 % op2 != 0) return false;
         ans = op1 ~/ op2; 
         break;
+      case Operation.square: ans = op1 * op1; break;
+      case Operation.cube: ans = op1 * op1 * op1; break;
     }
     if (ans < 0) return false;
     return true;
@@ -186,6 +207,57 @@ class QuestionGenerator {
         break;
     }
     return (divisor * quotient, divisor);
+  }
+
+  static (int, int) _generateTables(DifficultyLevel level) {
+    switch (level) {
+      case DifficultyLevel.level1:
+        return (_rand(2, 5), _rand(1, 10));
+      case DifficultyLevel.level2:
+        return (_rand(6, 10), _rand(1, 10));
+      case DifficultyLevel.level3:
+        return (_rand(11, 15), _rand(1, 10));
+      case DifficultyLevel.level4:
+        return (_rand(16, 20), _rand(1, 10));
+      case DifficultyLevel.level5:
+        return (_rand(21, 25), _rand(1, 10));
+      case DifficultyLevel.level6:
+        return (_primes[_rand(0, _primes.length - 1)], _rand(1, 10));
+    }
+  }
+
+  static (int, int) _generateSquare(DifficultyLevel level) {
+    switch (level) {
+      case DifficultyLevel.level1:
+        return (_rand(1, 10), 2);
+      case DifficultyLevel.level2:
+        return (_rand(11, 15), 2);
+      case DifficultyLevel.level3:
+        return (_rand(16, 20), 2);
+      case DifficultyLevel.level4:
+        return (_rand(21, 25), 2);
+      case DifficultyLevel.level5:
+        return (_rand(26, 30), 2);
+      case DifficultyLevel.level6:
+        return (_rand(31, 50), 2);
+    }
+  }
+
+  static (int, int) _generateCube(DifficultyLevel level) {
+    switch (level) {
+      case DifficultyLevel.level1:
+        return (_rand(1, 5), 3);
+      case DifficultyLevel.level2:
+        return (_rand(6, 10), 3);
+      case DifficultyLevel.level3:
+        return (_rand(11, 15), 3);
+      case DifficultyLevel.level4:
+        return (_rand(16, 20), 3);
+      case DifficultyLevel.level5:
+        return (_rand(21, 25), 3);
+      case DifficultyLevel.level6:
+        return (_rand(1, 30), 3);
+    }
   }
 
   static int _rand(int min, int max) => min + _random.nextInt(max - min + 1);

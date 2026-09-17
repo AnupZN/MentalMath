@@ -270,6 +270,9 @@ class _SessionTile extends StatelessWidget {
       case Operation.subtraction: return 'Subtraction';
       case Operation.multiplication: return 'Multiplication';
       case Operation.division: return 'Division';
+      case Operation.tables: return 'Tables';
+      case Operation.square: return 'Squares';
+      case Operation.cube: return 'Cubes';
     }
   }
 

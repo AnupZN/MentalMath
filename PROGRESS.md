@@ -46,24 +46,24 @@ lib/
     session_provider.dart           — Notifier<SessionState> (state machine)
   features/
     home/home_screen.dart           — Hero cards, quick stats, recent sessions
-    learn/learn_screen.dart         — TabBar host (3 tabs)
-    learn/tables_screen.dart        — Grid of 1-25 tables + detail bottom sheet
-    learn/squares_cubes_screen.dart — N² (1-30) + N³ (1-25) with superscript
-    learn/primes_screen.dart        — Sieve of Eratosthenes + prime chips
-    practice/practice_home_screen.dart  — Op selector, level chips, session config
-    practice/practice_session_screen.dart — Full session with keypad + timer + feedback
+    learn/learn_screen.dart         — TabBar host (3 tabs: Tables, Squares, Cubes)
+    learn/tables_screen.dart        — Grid of 1-25 tables + Prime multiplication tables (≤100)
+    learn/squares_screen.dart       — Dedicated modern Squares 1-50 with search & filter
+    learn/cubes_screen.dart         — Dedicated modern Cubes 1-30 with search & filter
+    practice/practice_home_screen.dart  — 7 operations (Arithmetic + Powers/Tables), per-Q timer, rapid mode
+    practice/practice_session_screen.dart — Rapid instant non-blocking feedback + per-question countdown
     practice/practice_results_screen.dart — Grade badge, stats, per-question review
     settings/settings_screen.dart   — Theme, defaults, about
   widgets/
     numeric_keypad.dart             — Custom 3×3 keypad with backspace + submit
     timer_bar.dart                  — Animated LinearProgressIndicator (green/orange/red)
-    question_card.dart              — Large typography question display
+    question_card.dart              — Adaptive large typography display with power notation
     grade_badge.dart                — S/A/B/C/D colored circle badge
     stat_card.dart                  — Icon + value + label mini card
 
 test/
   widget_test.dart                  — Smoke test (2 tests)
-  services/question_generator_test.dart — 39 tests covering all ops × levels
+  services/question_generator_test.dart — 57 tests covering all 7 ops × all levels
   services/scoring_service_test.dart    — 11 tests covering all scoring functions
 ```
 
@@ -74,8 +74,9 @@ test/
 | Check | Result |
 |-------|--------|
 | `flutter analyze` | ✅ **No issues found** |
-| `flutter test` | ✅ **52/52 tests passed** |
+| `flutter test` | ✅ **70/70 tests passed** |
 | `flutter build linux --release` | ✅ **Built: build/linux/x64/release/bundle/mental_math** |
+| `flutter build web --release` | ✅ **Built: build/web (serving on LAN)** |
 | `flutter build apk --release` | ⏸️ **Ready to build on demand** |
 
 ---

@@ -23,10 +23,17 @@ void main() {
             expected = q.operand1 - q.operand2;
             break;
           case Operation.multiplication:
+          case Operation.tables:
             expected = q.operand1 * q.operand2;
             break;
           case Operation.division:
             expected = q.operand1 ~/ q.operand2;
+            break;
+          case Operation.square:
+            expected = q.operand1 * q.operand1;
+            break;
+          case Operation.cube:
+            expected = q.operand1 * q.operand1 * q.operand1;
             break;
         }
         expect(q.correctAnswer, equals(expected),
@@ -175,6 +182,48 @@ void main() {
           expect(q.correctAnswer, inInclusiveRange(2, 10)); // quotient
         }
       });
+    });
+
+    group('Tables Practice', () {
+      for (final level in DifficultyLevel.values) {
+        test('Level ${level.index + 1} produces 10 table questions with correct answers', () {
+          final questions = QuestionGenerator.generate(
+            operation: Operation.tables,
+            difficulty: level,
+            count: 10,
+          );
+          expectCount(questions, 10);
+          expectCorrectAnswers(questions);
+        });
+      }
+    });
+
+    group('Squares Practice', () {
+      for (final level in DifficultyLevel.values) {
+        test('Level ${level.index + 1} produces 10 square questions with correct answers', () {
+          final questions = QuestionGenerator.generate(
+            operation: Operation.square,
+            difficulty: level,
+            count: 10,
+          );
+          expectCount(questions, 10);
+          expectCorrectAnswers(questions);
+        });
+      }
+    });
+
+    group('Cubes Practice', () {
+      for (final level in DifficultyLevel.values) {
+        test('Level ${level.index + 1} produces 10 cube questions with correct answers', () {
+          final questions = QuestionGenerator.generate(
+            operation: Operation.cube,
+            difficulty: level,
+            count: 10,
+          );
+          expectCount(questions, 10);
+          expectCorrectAnswers(questions);
+        });
+      }
     });
 
     test('Generates exact count for various sizes', () {
