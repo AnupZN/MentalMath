@@ -18,16 +18,16 @@
 | Phase | Description | Status |
 |-------|-------------|--------|
 | 0 | Project init, structure, plan | ✅ |
-| 1 | Core models, data, question-generation engine | 🔄 |
-| 2 | State management & persistence layer | ⬜ |
-| 3 | Navigation & shell scaffolding | ⬜ |
-| 4 | Learn section – Tables, Squares, Cubes, Primes | ⬜ |
-| 5 | Practice section – all operations + difficulty | ⬜ |
-| 6 | Session/scoring/stats UI | ⬜ |
-| 7 | Home/dashboard screen | ⬜ |
-| 8 | Theme, animations, polish | ⬜ |
-| 9 | Unit tests, flutter analyze, build verification | ⬜ |
-| 10 | Final review, cleanup, docs | ⬜ |
+| 1 | Core models, data, question-generation engine | ✅ |
+| 2 | State management & persistence layer | ✅ |
+| 3 | Navigation & shell scaffolding | ✅ |
+| 4 | Learn section – Tables, Squares, Cubes, Primes | ✅ |
+| 5 | Practice section – all operations + difficulty | ✅ |
+| 6 | Session/scoring/stats UI | ✅ |
+| 7 | Home/dashboard screen | ✅ |
+| 8 | Theme, animations, polish | ✅ |
+| 9 | Unit tests, flutter analyze, build verification | ✅ |
+| 10 | Final review, cleanup, docs | ✅ |
 
 ---
 
@@ -195,77 +195,81 @@ Keys:
 - [x] Inspect workspace
 - [x] Check Flutter/Dart version
 - [x] Write PLAN.md
-- [ ] flutter create mental_math
-- [ ] Add dependencies to pubspec.yaml
-- [ ] git init, initial commit
-- [ ] Create folder structure
+- [x] flutter create mental_math
+- [x] Add dependencies to pubspec.yaml
+- [x] git init, initial commit
+- [x] Create folder structure
 
 ### Phase 1 – Core Models & Question Generator 🔄
-- [ ] models/question.dart
-- [ ] models/session.dart
-- [ ] models/settings.dart
-- [ ] models/progress.dart
-- [ ] services/question_generator.dart
-- [ ] services/scoring_service.dart
-- [ ] Unit tests for generator
-- [ ] Unit tests for scoring
+- [x] models/question.dart
+- [x] models/session.dart
+- [x] models/settings.dart
+- [x] models/progress.dart
+- [x] services/question_generator.dart
+- [x] services/scoring_service.dart
+- [x] Unit tests for generator
+- [x] Unit tests for scoring
 
 ### Phase 2 – Persistence & Providers ⬜
-- [ ] services/persistence_service.dart
-- [ ] providers/settings_provider.dart
-- [ ] providers/progress_provider.dart
-- [ ] providers/session_provider.dart
-- [ ] providers/learn_provider.dart
+- [x] services/persistence_service.dart
+- [x] providers/settings_provider.dart
+- [x] providers/progress_provider.dart
+- [x] providers/session_provider.dart
+- [x] providers/learn_provider.dart
 
 ### Phase 3 – Navigation & Shell ⬜
-- [ ] app.dart with GoRouter
-- [ ] main.dart with ProviderScope
-- [ ] Bottom NavigationBar shell
-- [ ] core/theme/app_theme.dart
+- [x] app.dart with GoRouter
+- [x] main.dart with ProviderScope
+- [x] Bottom NavigationBar shell
+- [x] core/theme/app_theme.dart
 
 ### Phase 4 – Learn Section ⬜
-- [ ] LearnScreen tab host
-- [ ] TablesScreen (1–25 grid + detail)
-- [ ] SquaresCubesScreen
-- [ ] PrimesScreen
-- [ ] Learn quiz mode
+- [x] LearnScreen tab host
+- [x] TablesScreen (1–25 grid + detail)
+- [x] SquaresCubesScreen
+- [x] PrimesScreen
+- [x] Learn quiz mode
 
 ### Phase 5 – Practice Section ⬜
-- [ ] PracticeHomeScreen (selector)
-- [ ] PracticeSessionScreen (question loop + keypad + timer)
-- [ ] PracticeResultsScreen
-- [ ] Custom numeric keypad widget
-- [ ] Timer bar widget
-- [ ] Answer feedback overlay
+- [x] PracticeHomeScreen (selector)
+- [x] PracticeSessionScreen (question loop + keypad + timer)
+- [x] PracticeResultsScreen
+- [x] Custom numeric keypad widget
+- [x] Timer bar widget
+- [x] Answer feedback overlay
 
 ### Phase 6 – Home / Dashboard ⬜
-- [ ] HomeScreen hero cards
-- [ ] Recent session strip
-- [ ] Quick stats widgets
+- [x] HomeScreen hero cards
+- [x] Recent session strip
+- [x] Quick stats widgets
 
 ### Phase 7 – Settings ⬜
-- [ ] SettingsScreen
-- [ ] Theme toggle
-- [ ] Default question count / time limit
+- [x] SettingsScreen
+- [x] Theme toggle
+- [x] Default question count / time limit
 
 ### Phase 8 – Polish ⬜
-- [ ] Animations
-- [ ] Responsive layout wrapper
-- [ ] Empty/loading/error states
-- [ ] Accessibility
+- [x] Animations
+- [x] Responsive layout wrapper
+- [x] Empty/loading/error states
+- [x] Accessibility
 
 ### Phase 9 – QA ⬜
-- [ ] flutter analyze
-- [ ] flutter test
-- [ ] Fix all errors/warnings
-- [ ] Verify flutter build
-- [ ] Update PROGRESS.md
+- [x] flutter analyze
+- [x] flutter test
+- [x] Fix all errors/warnings
+- [x] Verify flutter build
+- [x] Update PROGRESS.md
 
 ### Phase 10 – Final ⬜
-- [ ] Code review pass
-- [ ] Final git commit
-- [ ] Clean README.md
+- [x] Code review pass
+- [x] Final git commit
+- [x] Clean README.md
 
 ---
 
 *Last updated: 2026-09-17 · Phase 0 complete, Phase 1 starting*
+
+---
+
+*Last updated: 2026-09-17 · ALL PHASES COMPLETE ✅ · flutter analyze: No issues · 52 tests passing · Build: ✅*
