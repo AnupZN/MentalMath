@@ -141,28 +141,28 @@ class QuestionGenerator {
     int op1, op2;
     switch (level) {
       case DifficultyLevel.level1:
-        op2 = _rand(1, 9);
-        op1 = _rand(math.max(2, op2), 9);
+        op2 = _rand(1, 8);
+        op1 = _rand(op2 + 1, 9);
         break;
       case DifficultyLevel.level2:
-        op1 = _rand(10, 99);
-        op2 = _rand(1, 9);
+        op1 = _rand(11, 99);
+        op2 = _rand(1, math.min(9, op1 - 1));
         break;
       case DifficultyLevel.level3:
-        op2 = _rand(10, 99);
-        op1 = _rand(op2, 99);
+        op2 = _rand(10, 98);
+        op1 = _rand(op2 + 1, 99);
         break;
       case DifficultyLevel.level4:
-        op1 = _rand(100, 999);
+        op1 = _rand(101, 999);
         op2 = _rand(1, 9);
         break;
       case DifficultyLevel.level5:
-        op1 = _rand(100, 999);
+        op1 = _rand(101, 999);
         op2 = _rand(10, 99);
         break;
       case DifficultyLevel.level6:
-        op2 = _rand(100, 999);
-        op1 = _rand(op2, 999);
+        op2 = _rand(100, 998);
+        op1 = _rand(op2 + 1, 999);
         break;
     }
     return (op1, op2);
@@ -231,15 +231,15 @@ class QuestionGenerator {
       case DifficultyLevel.level1:
         return (_rand(1, 10), 2);
       case DifficultyLevel.level2:
-        return (_rand(11, 15), 2);
+        return (_rand(1, 15), 2);
       case DifficultyLevel.level3:
-        return (_rand(16, 20), 2);
+        return (_rand(1, 20), 2);
       case DifficultyLevel.level4:
-        return (_rand(21, 25), 2);
+        return (_rand(1, 25), 2);
       case DifficultyLevel.level5:
-        return (_rand(26, 30), 2);
+        return (_rand(1, 30), 2);
       case DifficultyLevel.level6:
-        return (_rand(31, 50), 2);
+        return (_rand(1, 50), 2);
     }
   }
 
@@ -248,13 +248,13 @@ class QuestionGenerator {
       case DifficultyLevel.level1:
         return (_rand(1, 5), 3);
       case DifficultyLevel.level2:
-        return (_rand(6, 10), 3);
+        return (_rand(1, 10), 3);
       case DifficultyLevel.level3:
-        return (_rand(11, 15), 3);
+        return (_rand(1, 15), 3);
       case DifficultyLevel.level4:
-        return (_rand(16, 20), 3);
+        return (_rand(1, 20), 3);
       case DifficultyLevel.level5:
-        return (_rand(21, 25), 3);
+        return (_rand(1, 25), 3);
       case DifficultyLevel.level6:
         return (_rand(1, 30), 3);
     }

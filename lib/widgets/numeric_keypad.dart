@@ -9,12 +9,14 @@ class NumericKeypad extends StatelessWidget {
   final VoidCallback? onSubmit;
   final Function(int digit) onDigitPressed;
   final VoidCallback onBackspace;
+  final VoidCallback? onClear;
 
   const NumericKeypad({
     super.key,
     required this.currentInput,
     required this.onDigitPressed,
     required this.onBackspace,
+    this.onClear,
     this.onSubmit,
     this.disabled = false,
   });
@@ -116,6 +118,16 @@ class NumericKeypad extends StatelessWidget {
                     : () {
                         HapticFeedback.lightImpact();
                         onBackspace();
+                      },
+                onLongPress: disabled
+                    ? null
+                    : () {
+                        HapticFeedback.mediumImpact();
+                        if (onClear != null) {
+                          onClear!();
+                        } else {
+                          onBackspace();
+                        }
                       },
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(

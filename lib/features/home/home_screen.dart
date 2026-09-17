@@ -83,7 +83,7 @@ class _HeroSection extends StatelessWidget {
       _HeroCard(
         icon: Icons.menu_book_rounded,
         title: 'Learn',
-        subtitle: 'Tables, squares, cubes & primes',
+        subtitle: 'Tables (inc. primes), squares & cubes',
         gradient: const LinearGradient(
           colors: [Color(0xFF3F51B5), Color(0xFF5C6BC0)],
           begin: Alignment.topLeft,
@@ -94,7 +94,7 @@ class _HeroSection extends StatelessWidget {
       _HeroCard(
         icon: Icons.calculate_rounded,
         title: 'Practice',
-        subtitle: 'Test your mental math skills',
+        subtitle: 'Arithmetic, tables, squares & cubes',
         gradient: const LinearGradient(
           colors: [Color(0xFF1976D2), Color(0xFF42A5F5)],
           begin: Alignment.topLeft,
@@ -278,6 +278,88 @@ class _SessionTile extends StatelessWidget {
 
   String _diffLabel(DifficultyLevel l) => 'Level ${l.index + 1}';
 
+  void _showSessionDetails(BuildContext context, SessionResult s) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final dateStr = DateFormat('MMMM d, y • HH:mm').format(s.startTime);
+    final totalSec = s.totalTime.inSeconds;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: colorScheme.outlineVariant,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            GradeBadge(grade: s.grade, size: 72),
+            const SizedBox(height: 12),
+            Text(
+              '${_operationLabel(s.operation)} — ${_diffLabel(s.difficulty)}',
+              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              dateStr,
+              style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: StatCard(
+                    icon: Icons.check_circle_outline,
+                    value: '${s.correct}/${s.totalQuestions}',
+                    label: 'Correct',
+                    iconColor: Colors.green.shade600,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: StatCard(
+                    icon: Icons.percent,
+                    value: '${(s.accuracy * 100).toStringAsFixed(0)}%',
+                    label: 'Accuracy',
+                    iconColor: colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: StatCard(
+                    icon: Icons.timer_outlined,
+                    value: '${totalSec}s',
+                    label: 'Duration',
+                    iconColor: colorScheme.tertiary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Close'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -287,6 +369,7 @@ class _SessionTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
+        onTap: () => _showSessionDetails(context, session),
         leading: GradeBadge(grade: session.grade, size: 40),
         title: Text(
           '${_operationLabel(session.operation)} · ${_diffLabel(session.difficulty)}',
@@ -296,9 +379,16 @@ class _SessionTile extends StatelessWidget {
           '${session.correct}/${session.totalQuestions} correct · ${(session.accuracy * 100).toStringAsFixed(0)}%',
           style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
         ),
-        trailing: Text(
-          dateStr,
-          style: theme.textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              dateStr,
+              style: theme.textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant),
+            ),
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right, size: 16, color: colorScheme.onSurfaceVariant),
+          ],
         ),
       ),
     );

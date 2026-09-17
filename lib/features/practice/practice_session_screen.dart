@@ -35,6 +35,7 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
   String _currentInput = '';
   bool _showFeedback = false;
   bool _lastAnswerCorrect = false;
+  int? _lastCorrectAnswer;
   int _remainingSeconds = 0;
   Timer? _questionTimer;
 
@@ -128,11 +129,12 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
     setState(() {
       _showFeedback = true;
       _lastAnswerCorrect = isCorrect;
+      _lastCorrectAnswer = correctAnswer;
     });
     _feedbackController.forward(from: 0);
 
-    // Subtle, rapid auto-fade (300ms) that does NOT block user typing
-    Future.delayed(const Duration(milliseconds: 400), () {
+    final delayMs = isCorrect ? 350 : 700;
+    Future.delayed(Duration(milliseconds: delayMs), () {
       if (mounted) {
         _feedbackController.reverse().then((_) {
           if (mounted) {
@@ -298,7 +300,11 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                _lastAnswerCorrect ? 'Correct! +1' : 'Incorrect',
+                                _lastAnswerCorrect
+                                    ? 'Correct! +1'
+                                    : (_lastCorrectAnswer != null
+                                        ? 'Incorrect (was $_lastCorrectAnswer)'
+                                        : 'Incorrect'),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -320,6 +326,7 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
                 currentInput: _currentInput,
                 onDigitPressed: _onDigitPressed,
                 onBackspace: _onBackspace,
+                onClear: () => setState(() => _currentInput = ''),
                 onSubmit: _currentInput.isEmpty ? null : _onSubmit,
               ),
             ),
