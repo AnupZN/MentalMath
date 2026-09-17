@@ -92,13 +92,13 @@ be769cf chore: initialize project with Flutter 3.47.1, add dependencies and PLAN
 
 ---
 
-## Known Issues / Limitations
-
-1. **Learn quiz mode** — Planned in PLAN.md but not yet implemented (per-section mini-quiz button in learn screens). Low priority; core practice mode is complete.
-2. **Hero animations** — Basic page transitions used; hero animations between cards not wired up yet.
-3. **Session mid-exit saves** — When user exits mid-session, progress is discarded (correct behavior, but no partial save).
-4. **Score not shown in AppBar during session** — Live score visible via streak indicator only.
-5. **No haptic on timed-out question** — Currently just auto-submits `null`; could add haptic.
+## Audit & Flaws Resolved in Latest Update
+1. **Immediate feedback flaw**: Previously, when an answer was incorrect during rapid practice, the pill simply said "Incorrect" without revealing the right answer. Now it displays `Incorrect (was X)` for 700ms so you learn the answer without having your rapid pace blocked.
+2. **Keypad clearing UX**: Added long-press on backspace to clear the entire input field with tactile feedback.
+3. **Subtraction triviality**: Fixed subtraction generation logic where operands could be equal, preventing trivial `X - X = 0` questions.
+4. **Progressive learning ranges**: Squares and cubes difficulty levels are now progressive (e.g. 1–15, 1–20, 1–25, 1–30, 1–50) instead of narrow non-overlapping 5-number bands.
+5. **Interactive past sessions**: Added bottom sheet modal when tapping on recent sessions in the dashboard to review accuracy, duration, and score.
+6. **Hero card descriptions**: Synchronized dashboard hero card subtitles with all 7 practice modes and expanded learn content.
 
 ---
 
