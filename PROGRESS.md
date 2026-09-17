@@ -76,6 +76,7 @@ test/
 | `flutter analyze` | ✅ **No issues found** |
 | `flutter test` | ✅ **52/52 tests passed** |
 | `flutter build linux --release` | ✅ **Built: build/linux/x64/release/bundle/mental_math** |
+| `flutter build apk --release` | ⏸️ **Ready to build on demand** |
 
 ---
 
