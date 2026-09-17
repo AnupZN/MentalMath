@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/question.dart';
 
-/// Displays a math question prominently with large typography.
+/// Displays a math question prominently with large, adaptive typography.
+/// Scales down automatically on narrow phone screens.
 class QuestionCard extends StatelessWidget {
   final Question question;
   final bool showAnswer;
@@ -16,61 +17,67 @@ class QuestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
+    // Adaptive font size: smaller on compact phones
+    final double fontSize = screenWidth < 360 ? 36 : 45;
+    final double operatorFontSize = screenWidth < 360 ? 32 : 40;
+    final double hPadding = screenWidth < 360 ? 16.0 : 24.0;
+    final double vPadding = screenWidth < 400 ? 20.0 : 28.0;
+
+    final baseStyle = TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.bold,
+      color: colorScheme.onSurface,
+    );
 
     return Card(
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 28),
+        padding: EdgeInsets.symmetric(horizontal: hPadding, vertical: vPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  '${question.operand1}',
-                  style: theme.textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    question.operatorSymbol,
-                    style: theme.textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.w300,
-                      color: colorScheme.primary,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text('${question.operand1}', style: baseStyle),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    child: Text(
+                      question.operatorSymbol,
+                      style: baseStyle.copyWith(
+                        fontSize: operatorFontSize,
+                        fontWeight: FontWeight.w300,
+                        color: colorScheme.primary,
+                      ),
                     ),
                   ),
-                ),
-                Text(
-                  '${question.operand2}',
-                  style: theme.textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(
-                    '=',
-                    style: theme.textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.w300,
-                      color: colorScheme.onSurfaceVariant,
+                  Text('${question.operand2}', style: baseStyle),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      '=',
+                      style: baseStyle.copyWith(
+                        fontWeight: FontWeight.w300,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
-                ),
-                Text(
-                  showAnswer ? '${question.correctAnswer}' : '?',
-                  style: theme.textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: showAnswer ? Colors.green.shade600 : colorScheme.primary,
+                  Text(
+                    showAnswer ? '${question.correctAnswer}' : '?',
+                    style: baseStyle.copyWith(
+                      color: showAnswer
+                          ? Colors.green.shade600
+                          : colorScheme.primary,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
