@@ -15,6 +15,8 @@ class PracticeSessionScreen extends ConsumerStatefulWidget {
   final bool timedMode;
   final int timeLimitSeconds;
   final FeedbackMode feedbackMode;
+  final int? targetNumber;
+  final String? returnPath;
 
   const PracticeSessionScreen({
     super.key,
@@ -24,6 +26,8 @@ class PracticeSessionScreen extends ConsumerStatefulWidget {
     required this.timedMode,
     required this.timeLimitSeconds,
     required this.feedbackMode,
+    this.targetNumber,
+    this.returnPath,
   });
 
   @override
@@ -58,6 +62,8 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
         widget.operation,
         widget.difficulty,
         widget.questionCount,
+        targetNumber: widget.targetNumber,
+        returnPath: widget.returnPath,
       );
       if (widget.timedMode) {
         _startQuestionTimer();
@@ -204,7 +210,7 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
         if (didPop) return;
         final shouldPop = await _onWillPop();
         if (shouldPop && context.mounted) {
-          context.go('/practice');
+          context.go(widget.returnPath ?? '/practice');
         }
       },
       child: Scaffold(
@@ -214,12 +220,14 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen>
             onPressed: () async {
               final shouldExit = await _onWillPop();
               if (shouldExit && context.mounted) {
-                context.go('/practice');
+                context.go(widget.returnPath ?? '/practice');
               }
             },
           ),
           title: Text(
-            'Question ${sessionState.currentIndex + 1} of ${sessionState.questions.length}',
+            widget.targetNumber != null
+                ? 'Table of ${widget.targetNumber} · ${sessionState.currentIndex + 1}/${sessionState.questions.length}'
+                : 'Question ${sessionState.currentIndex + 1} of ${sessionState.questions.length}',
             style: theme.textTheme.titleMedium,
           ),
           bottom: PreferredSize(

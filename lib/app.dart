@@ -54,6 +54,8 @@ final router = GoRouter(
         final timed = extra['timed'] as bool? ?? false;
         final timeLimit = extra['timeLimit'] as int? ?? 20;
         final feedbackIndex = extra['feedback'] as int? ?? 0;
+        final targetNumber = extra['targetNumber'] as int?;
+        final returnPath = extra['returnPath'] as String?;
 
         return PracticeSessionScreen(
           operation: Operation.values[opIndex],
@@ -62,6 +64,8 @@ final router = GoRouter(
           timedMode: timed,
           timeLimitSeconds: timeLimit,
           feedbackMode: FeedbackMode.values[feedbackIndex],
+          targetNumber: targetNumber,
+          returnPath: returnPath,
         );
       },
     ),

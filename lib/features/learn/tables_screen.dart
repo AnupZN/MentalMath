@@ -155,19 +155,67 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 }
 
-class _TableDetailSheet extends StatelessWidget {
+class _TableDetailSheet extends StatefulWidget {
   final int tableNum;
   final bool isPrime;
 
   const _TableDetailSheet({required this.tableNum, this.isPrime = false});
 
   @override
+  State<_TableDetailSheet> createState() => _TableDetailSheetState();
+}
+
+class _TableDetailSheetState extends State<_TableDetailSheet> {
+  DifficultyLevel _selectedDifficulty = DifficultyLevel.level1;
+
+  String _levelTitle(DifficultyLevel level) {
+    switch (level) {
+      case DifficultyLevel.level1: return 'L1: × 1–10';
+      case DifficultyLevel.level2: return 'L2: × 1–15';
+      case DifficultyLevel.level3: return 'L3: × 11–25';
+      case DifficultyLevel.level4: return 'L4: × 11–50';
+      case DifficultyLevel.level5: return 'L5: × 20–99';
+      case DifficultyLevel.level6: return 'L6: Mixed';
+    }
+  }
+
+  String _levelSubtitle(int n, DifficultyLevel level) {
+    switch (level) {
+      case DifficultyLevel.level1: return 'Basic table facts (e.g. $n × 6, $n × 9)';
+      case DifficultyLevel.level2: return 'Extended table (e.g. $n × 12, $n × 15)';
+      case DifficultyLevel.level3: return 'Teens & 20s (e.g. $n × 14, $n × 23)';
+      case DifficultyLevel.level4: return '2-digit multipliers (e.g. $n × 32, $n × 45)';
+      case DifficultyLevel.level5: return 'Advanced multipliers (e.g. $n × 67, $n × 84)';
+      case DifficultyLevel.level6: return 'Mixed all multipliers (e.g. $n × 6, $n × 12, $n × 32)';
+    }
+  }
+
+  void _startPractice() {
+    Navigator.of(context).pop();
+    context.go(
+      '/practice/session',
+      extra: {
+        'operation': Operation.tables.index,
+        'difficulty': _selectedDifficulty.index,
+        'count': 10,
+        'timed': false,
+        'timeLimit': 20,
+        'feedback': FeedbackMode.instant.index,
+        'targetNumber': widget.tableNum,
+        'returnPath': '/learn',
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final tableNum = widget.tableNum;
+    final isPrime = widget.isPrime;
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.65,
+      initialChildSize: 0.72,
       minChildSize: 0.45,
       maxChildSize: 0.95,
       expand: false,
@@ -204,20 +252,7 @@ class _TableDetailSheet extends StatelessWidget {
                   ),
                   const Spacer(),
                   FilledButton.tonalIcon(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      context.go(
-                        '/practice/session',
-                        extra: {
-                          'operation': Operation.tables.index,
-                          'difficulty': DifficultyLevel.level6.index,
-                          'count': 10,
-                          'timed': false,
-                          'timeLimit': 10,
-                          'feedback': FeedbackMode.instant.index,
-                        },
-                      );
-                    },
+                    onPressed: _startPractice,
                     icon: const Icon(Icons.play_arrow_rounded, size: 18),
                     label: const Text('Practice'),
                   ),
@@ -225,6 +260,43 @@ class _TableDetailSheet extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+            ),
+            // Difficulty selector row
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: DifficultyLevel.values.map((level) {
+                        final isSelected = _selectedDifficulty == level;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: ChoiceChip(
+                            label: Text(_levelTitle(level)),
+                            selected: isSelected,
+                            onSelected: (val) {
+                              if (val) setState(() => _selectedDifficulty = level);
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 6),
+                    child: Text(
+                      _levelSubtitle(tableNum, _selectedDifficulty),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ),
                 ],
               ),

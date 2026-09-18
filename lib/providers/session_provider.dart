@@ -20,6 +20,8 @@ class SessionState {
   final int streak;
   final int bestStreak;
   final String sessionId;
+  final int? targetNumber;
+  final String? returnPath;
 
   const SessionState({
     this.status = SessionStatus.idle,
@@ -33,6 +35,8 @@ class SessionState {
     this.streak = 0,
     this.bestStreak = 0,
     this.sessionId = '',
+    this.targetNumber,
+    this.returnPath,
   });
 
   SessionState copyWith({
@@ -47,6 +51,8 @@ class SessionState {
     int? streak,
     int? bestStreak,
     String? sessionId,
+    int? targetNumber,
+    String? returnPath,
   }) {
     return SessionState(
       status: status ?? this.status,
@@ -60,6 +66,8 @@ class SessionState {
       streak: streak ?? this.streak,
       bestStreak: bestStreak ?? this.bestStreak,
       sessionId: sessionId ?? this.sessionId,
+      targetNumber: targetNumber ?? this.targetNumber,
+      returnPath: returnPath ?? this.returnPath,
     );
   }
 }
@@ -68,8 +76,19 @@ class SessionNotifier extends Notifier<SessionState> {
   @override
   SessionState build() => const SessionState();
 
-  void startSession(Operation op, DifficultyLevel diff, int count) {
-    final questions = QuestionGenerator.generate(operation: op, difficulty: diff, count: count);
+  void startSession(
+    Operation op,
+    DifficultyLevel diff,
+    int count, {
+    int? targetNumber,
+    String? returnPath,
+  }) {
+    final questions = QuestionGenerator.generate(
+      operation: op,
+      difficulty: diff,
+      count: count,
+      targetNumber: targetNumber,
+    );
     state = SessionState(
       status: SessionStatus.inProgress,
       operation: op,
@@ -82,6 +101,8 @@ class SessionNotifier extends Notifier<SessionState> {
       streak: 0,
       bestStreak: 0,
       sessionId: 'session_${DateTime.now().microsecondsSinceEpoch}',
+      targetNumber: targetNumber,
+      returnPath: returnPath,
     );
   }
 

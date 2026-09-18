@@ -46,15 +46,27 @@ class PracticeResultsScreen extends StatelessWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) context.go('/practice');
+        if (!didPop) context.go(sessionState.returnPath ?? '/practice');
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Results · ${_operationLabel(sessionState.operation)}'),
-          leading: IconButton(
-            icon: const Icon(Icons.home_outlined),
-            onPressed: () => context.go('/'),
+          title: Text(
+            sessionState.targetNumber != null
+                ? 'Results · Table of ${sessionState.targetNumber}'
+                : 'Results · ${_operationLabel(sessionState.operation)}',
           ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            tooltip: 'Back',
+            onPressed: () => context.go(sessionState.returnPath ?? '/practice'),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.home_outlined),
+              tooltip: 'Home',
+              onPressed: () => context.go('/'),
+            ),
+          ],
         ),
         body: ListView(
           padding: const EdgeInsets.all(16),
@@ -133,16 +145,34 @@ class PracticeResultsScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () => context.go('/practice'),
-                    icon: const Icon(Icons.tune),
-                    label: const Text('Change'),
+                    onPressed: () => context.go(sessionState.returnPath ?? '/practice'),
+                    icon: Icon(sessionState.returnPath == '/learn' ? Icons.menu_book_outlined : Icons.tune),
+                    label: Text(sessionState.returnPath == '/learn' ? 'Back to Tables' : 'Change'),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   flex: 2,
                   child: FilledButton.icon(
-                    onPressed: () => context.go('/practice'),
+                    onPressed: () {
+                      if (sessionState.targetNumber != null) {
+                        context.go(
+                          '/practice/session',
+                          extra: {
+                            'operation': sessionState.operation?.index ?? Operation.tables.index,
+                            'difficulty': sessionState.difficulty?.index ?? DifficultyLevel.level1.index,
+                            'count': sessionState.questions.length,
+                            'timed': false,
+                            'timeLimit': 20,
+                            'feedback': FeedbackMode.instant.index,
+                            'targetNumber': sessionState.targetNumber,
+                            'returnPath': sessionState.returnPath ?? '/learn',
+                          },
+                        );
+                      } else {
+                        context.go('/practice');
+                      }
+                    },
                     icon: const Icon(Icons.replay_rounded),
                     label: const Text('Practice Again'),
                   ),

@@ -9,8 +9,10 @@ class QuestionGenerator {
     required Operation operation,
     required DifficultyLevel difficulty,
     required int count,
+    int? targetNumber,
   }) {
-    final poolSize = math.min(count * 3, 200);
+    final int maxUnique = (targetNumber != null && difficulty == DifficultyLevel.level1) ? 10 : 200;
+    final poolSize = math.min(count * 3, maxUnique);
     final Set<String> seen = {};
     final List<Question> candidates = [];
     int attempts = 0;
@@ -20,42 +22,47 @@ class QuestionGenerator {
       int op1 = 0;
       int op2 = 0;
 
-      switch (operation) {
-        case Operation.addition:
-          final pair = _generateAddition(difficulty);
-          op1 = pair.$1;
-          op2 = pair.$2;
-          break;
-        case Operation.subtraction:
-          final pair = _generateSubtraction(difficulty);
-          op1 = pair.$1;
-          op2 = pair.$2;
-          break;
-        case Operation.multiplication:
-          final pair = _generateMultiplication(difficulty);
-          op1 = pair.$1;
-          op2 = pair.$2;
-          break;
-        case Operation.division:
-          final pair = _generateDivision(difficulty);
-          op1 = pair.$1;
-          op2 = pair.$2;
-          break;
-        case Operation.tables:
-          final pair = _generateTables(difficulty);
-          op1 = pair.$1;
-          op2 = pair.$2;
-          break;
-        case Operation.square:
-          final pair = _generateSquare(difficulty);
-          op1 = pair.$1;
-          op2 = pair.$2;
-          break;
-        case Operation.cube:
-          final pair = _generateCube(difficulty);
-          op1 = pair.$1;
-          op2 = pair.$2;
-          break;
+      if (targetNumber != null && (operation == Operation.tables || operation == Operation.multiplication)) {
+        op1 = targetNumber;
+        op2 = _generateSecondOperandForTable(difficulty);
+      } else {
+        switch (operation) {
+          case Operation.addition:
+            final pair = _generateAddition(difficulty);
+            op1 = pair.$1;
+            op2 = pair.$2;
+            break;
+          case Operation.subtraction:
+            final pair = _generateSubtraction(difficulty);
+            op1 = pair.$1;
+            op2 = pair.$2;
+            break;
+          case Operation.multiplication:
+            final pair = _generateMultiplication(difficulty);
+            op1 = pair.$1;
+            op2 = pair.$2;
+            break;
+          case Operation.division:
+            final pair = _generateDivision(difficulty);
+            op1 = pair.$1;
+            op2 = pair.$2;
+            break;
+          case Operation.tables:
+            final pair = _generateTables(difficulty);
+            op1 = pair.$1;
+            op2 = pair.$2;
+            break;
+          case Operation.square:
+            final pair = _generateSquare(difficulty);
+            op1 = pair.$1;
+            op2 = pair.$2;
+            break;
+          case Operation.cube:
+            final pair = _generateCube(difficulty);
+            op1 = pair.$1;
+            op2 = pair.$2;
+            break;
+        }
       }
 
       if (_validate(operation, op1, op2)) {
@@ -223,6 +230,36 @@ class QuestionGenerator {
         return (_rand(21, 25), _rand(1, 10));
       case DifficultyLevel.level6:
         return (_primes[_rand(0, _primes.length - 1)], _rand(1, 10));
+    }
+  }
+
+  static int _generateSecondOperandForTable(DifficultyLevel level) {
+    switch (level) {
+      case DifficultyLevel.level1:
+        // Basic facts: 1 to 10 (e.g. 19 × 6)
+        return _rand(1, 10);
+      case DifficultyLevel.level2:
+        // Extended table facts: 2 to 15 (e.g. 19 × 12)
+        return _rand(2, 15);
+      case DifficultyLevel.level3:
+        // Teens and early 20s: 11 to 25 (e.g. 19 × 14, 19 × 23)
+        return _rand(11, 25);
+      case DifficultyLevel.level4:
+        // 2-digit intermediate: 11 to 50 (e.g. 19 × 32)
+        return _rand(11, 50);
+      case DifficultyLevel.level5:
+        // 2-digit advanced: 20 to 99 (e.g. 19 × 67, 19 × 84)
+        return _rand(20, 99);
+      case DifficultyLevel.level6:
+        // Mixed range across 2 to 99 (e.g. 19 × 6, 19 × 12, 19 × 32, 19 × 78)
+        final roll = _random.nextInt(100);
+        if (roll < 30) {
+          return _rand(2, 12);
+        } else if (roll < 65) {
+          return _rand(12, 50);
+        } else {
+          return _rand(51, 99);
+        }
     }
   }
 

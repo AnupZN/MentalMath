@@ -247,5 +247,95 @@ void main() {
         expect(q.id, isNotEmpty);
       }
     });
+
+    group('Specific Table Practice (targetNumber)', () {
+      test('Table 19 fixes operand1 to 19 for all questions', () {
+        final questions = QuestionGenerator.generate(
+          operation: Operation.tables,
+          difficulty: DifficultyLevel.level1,
+          count: 10,
+          targetNumber: 19,
+        );
+        expect(questions.length, equals(10));
+        for (final q in questions) {
+          expect(q.operand1, equals(19), reason: 'First operand must always be the selected table number');
+          expect(q.operation, equals(Operation.tables));
+          expect(q.operatorSymbol, equals('×'));
+          expect(q.correctAnswer, equals(19 * q.operand2));
+          expect(q.displayString, equals('19 × ${q.operand2}'));
+        }
+      });
+
+      test('Table 19 Level 1 has multipliers in 1..10', () {
+        final questions = QuestionGenerator.generate(
+          operation: Operation.tables,
+          difficulty: DifficultyLevel.level1,
+          count: 10,
+          targetNumber: 19,
+        );
+        for (final q in questions) {
+          expect(q.operand1, equals(19));
+          expect(q.operand2, inInclusiveRange(1, 10));
+          expect(q.correctAnswer, equals(19 * q.operand2));
+        }
+      });
+
+      test('Table 19 Level 2 has multipliers in 2..15 (e.g. 19 × 12)', () {
+        final questions = QuestionGenerator.generate(
+          operation: Operation.tables,
+          difficulty: DifficultyLevel.level2,
+          count: 20,
+          targetNumber: 19,
+        );
+        for (final q in questions) {
+          expect(q.operand1, equals(19));
+          expect(q.operand2, inInclusiveRange(2, 15));
+          expect(q.correctAnswer, equals(19 * q.operand2));
+        }
+      });
+
+      test('Table 19 Level 4 has 2-digit multipliers in 11..50 (e.g. 19 × 32)', () {
+        final questions = QuestionGenerator.generate(
+          operation: Operation.tables,
+          difficulty: DifficultyLevel.level4,
+          count: 20,
+          targetNumber: 19,
+        );
+        for (final q in questions) {
+          expect(q.operand1, equals(19));
+          expect(q.operand2, inInclusiveRange(11, 50));
+          expect(q.correctAnswer, equals(19 * q.operand2));
+        }
+      });
+
+      test('Table 19 Level 6 produces mixed multipliers across ranges', () {
+        final questions = QuestionGenerator.generate(
+          operation: Operation.tables,
+          difficulty: DifficultyLevel.level6,
+          count: 30,
+          targetNumber: 19,
+        );
+        for (final q in questions) {
+          expect(q.operand1, equals(19));
+          expect(q.operand2, inInclusiveRange(2, 99));
+          expect(q.correctAnswer, equals(19 * q.operand2));
+        }
+      });
+
+      test('Prime tables 23 and 97 fix operand1 properly', () {
+        for (final prime in [23, 97]) {
+          final questions = QuestionGenerator.generate(
+            operation: Operation.tables,
+            difficulty: DifficultyLevel.level3,
+            count: 10,
+            targetNumber: prime,
+          );
+          for (final q in questions) {
+            expect(q.operand1, equals(prime));
+            expect(q.correctAnswer, equals(prime * q.operand2));
+          }
+        }
+      });
+    });
   });
 }
